@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gym Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .calendar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .day {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #ccc;
+      margin: 2px;
+    }
+    .green {
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gym Tracker</h1>
+  <button id="gymButton">I went to the gym today!</button>
+  <table id="gymTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Visited Gym</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="calendar" id="calendar"></div>
+
+  <script>
+    // Function to get today's date in "YYYY-MM-DD" format
+    function getFormattedDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Function to update the table with gym visit information
+    function updateTable(date, visited) {
+      const tableBody = document.getElementById('tableBody');
+      const row = tableBody.insertRow(0);
+      const cell1 = row.insertCell(0);
+      const cell2 = row.insertCell(1);
+      cell1.innerHTML = date;
+      cell2.innerHTML = visited ? 'Yes' : 'No';
+    }
+
+    // Function to update the calendar display
+    function updateCalendar(date) {
+      const calendar = document.getElementById('calendar');
+      const dayDiv = document.createElement('div');
+      dayDiv.classList.add('day');
+      dayDiv.textContent = date.split('-')[2]; // Extracting day from the date
+
+      // Check if visited gym on this date
+      const visited = localStorage.getItem(date) === 'true';
+      if (visited) {
+        dayDiv.classList.add('green');
+      }
+
+      calendar.appendChild(dayDiv);
+    }
+
+    // Function to handle button click
+    function handleButtonClick() {
+      const currentDate = getFormattedDate();
+      localStorage.setItem(currentDate, 'true'); // Save gym visit info to local storage
+      updateTable(currentDate, true);
+      updateCalendar(currentDate);
+    }
+
+    // Add event listener to the button
+    const gymButton = document.getElementById('gymButton');
+    gymButton.addEventListener('click', handleButtonClick);
+
+    // Initialize calendar for the entire year
+    for (let i = 1; i <= 365; i++) {
+      const currentDate = new Date();
+      currentDate.setDate(i);
+      const date = getFormattedDate(currentDate);
+      updateCalendar(date);
+    }
+  </script>
+</body>
+</html>

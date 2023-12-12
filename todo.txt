@@ -1,0 +1,13 @@
+- sync start date and end date
+- make the days clickable
+- move the month labels below (and make format Jan '23)
+- min.js vs .js
+- move calendar script to inside event listener
+
+- implement statistics div
+
+- store in session cookies
+
+- make it compatible on mobile phones
+
+- add footer
