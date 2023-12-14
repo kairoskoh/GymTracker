@@ -47,6 +47,9 @@ var calendarHeatmap = {
 
     // Parse data for summary details
     calendarHeatmap.parseData();
+
+    // Draw the chart
+    calendarHeatmap.drawYearOverview();
   },
 
 
