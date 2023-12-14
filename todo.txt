@@ -6,6 +6,7 @@
 - implement statistics div
 
 - store in session cookies
+- retrieve values from session cookies everytime
 
 - make it compatible on mobile phones
 
