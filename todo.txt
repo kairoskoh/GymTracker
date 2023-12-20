@@ -1,7 +1,7 @@
 calendar tasks:
 - sync start date and end date to the calendar
 - make the days clickable
-- min.js vs .js
+- compress .js into .min.js using https://jscompress.com/
 - move calendar script to inside event listener
 
 statistics tasks:
