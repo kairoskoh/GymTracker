@@ -7,9 +7,6 @@ calendar tasks:
 statistics tasks:
 - implement statistics div
 
-footer tasks:
-- add footer
-
 general UI:
 - make it compatible on mobile phones
 
