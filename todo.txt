@@ -1,13 +1,17 @@
+calendar tasks:
 - sync start date and end date to the calendar
 - make the days clickable
 - min.js vs .js
 - move calendar script to inside event listener
 
+statistics tasks:
 - implement statistics div
 
-- make it compatible on mobile phones
-
+footer tasks:
 - add footer
+
+general UI:
+- make it compatible on mobile phones
 
 optional:
 - in a dropdown button, show a table/list of dates that u went to gym
