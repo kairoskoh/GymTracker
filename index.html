@@ -245,6 +245,24 @@
           setCookie("membershipCost", membershipCost.value, 30)
         }
         });
+
+        // Update input texts based on cookies
+        $(function() {
+          if (getCookie("membershipCost") !== null) {                 
+          var val1 = getCookie("membershipCost");            
+          var input1 = document.getElementById("membershipCost");                                 
+          input1.value = val1;
+          }
+          if (getCookie("endDate") !== null) {                 
+            var val2 = getCookie("endDate");        
+            $("#endDate").datepicker("setDate", new Date(val2));
+          }
+          if (getCookie("startDate") !== null) {                 
+            var val3 = getCookie("startDate");            
+            $("#startDate").datepicker("setDate", new Date(val3));
+          }
+        });
+        
       </script>
 </body>
 </html>

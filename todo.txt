@@ -1,13 +1,13 @@
-- sync start date and end date
+- sync start date and end date to the calendar
 - make the days clickable
 - min.js vs .js
 - move calendar script to inside event listener
 
 - implement statistics div
 
-- store in session cookies
-- retrieve values from session cookies everytime
-
 - make it compatible on mobile phones
 
 - add footer
+
+optional:
+- in a dropdown button, show a table/list of dates that u went to gym
