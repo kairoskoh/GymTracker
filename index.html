@@ -109,7 +109,7 @@
     <div class="membership">
         <div class="cost">
             <img src="./assets/money_icon.png" alt="money_icon">
-            <input type="text" placeholder="Membership Cost">
+            <input type="text" id="membershipCost" placeholder="Membership Cost">
         </div>
         <div class="datepicker">
             <img src="./assets/calendar_icon.png" alt="calendar_icon">
@@ -207,11 +207,67 @@
 
         if (startDate !== null && endDate !== null) {
             if (startDate > endDate) {
-            // Show popup or alert for invalid date selection
-            alert("Invalid membership dates selected. Please ensure the start date is before the end date.");
+              // Show popup or alert for invalid date selection
+              alert("Invalid membership dates selected. Please ensure the start date is before the end date.");
+            } else {
+              // Stores startDate and endDate into cookies
+              setCookie("startDate",startDate,30)
+              setCookie("endDate",endDate, 30)
             }
         }
         });
+
+        // Function to set cookies
+        function setCookie(cname,cvalue,exdays)
+        {
+        var d = new Date();
+        d.setTime(d.getTime()+(exdays*24*60*60*1000));
+        var expires = "expires="+d.toGMTString();
+        document.cookie = cname+"="+cvalue+"; "+expires;
+        }
+
+        // Function to get cookies
+        function getCookie(cname)
+        {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+          {
+          var c = ca[i].trim();
+          if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+          }
+        return "";
+        }
+
+        // Event listener for change in membership costs
+        $("#membershipCost").on("change", function(){
+        if (membershipCost !== null) {
+          setCookie("membershipCost", membershipCost.value, 30)
+        }
+        });
+
+        // Update input texts based on cookies
+        $(function() {
+          if (getCookie("membershipCost") !== null) {                 
+          var val1 = getCookie("membershipCost");            
+          var input1 = document.getElementById("membershipCost");                                 
+          input1.value = val1;
+          }
+          if (getCookie("endDate") !== null) {                 
+            var val2 = getCookie("endDate");        
+            $("#endDate").datepicker("setDate", new Date(val2));
+          }
+          if (getCookie("startDate") !== null) {                 
+            var val3 = getCookie("startDate");            
+            $("#startDate").datepicker("setDate", new Date(val3));
+          }
+        });
+        
       </script>
+
+  <footer style="text-align: center; margin-top: 20px;">
+    <p>© 2023 <a href="https://www.linkedin.com/in/kairoskoh/" target="_blank">Kairos</a> All Rights Reserved</p>
+  </footer>
+
 </body>
 </html>
