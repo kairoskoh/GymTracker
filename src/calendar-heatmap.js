@@ -46,7 +46,7 @@ var calendarHeatmap = {
     calendarHeatmap.createElements();
 
     // Parse data for summary details
-    calendarHeatmap.parseData();
+    // calendarHeatmap.parseData();
 
     // Draw the chart
     calendarHeatmap.drawYearOverview();
@@ -101,9 +101,10 @@ var calendarHeatmap = {
       svg.attr('width', calendarHeatmap.settings.width)
         .attr('height', calendarHeatmap.settings.height);
 
-      if (!!calendarHeatmap.data && !!calendarHeatmap.data[0].summary) {
-        calendarHeatmap.drawYearOverview();
-      }
+      // if (!!calendarHeatmap.data && !!calendarHeatmap.data[0].summary) {
+      //   calendarHeatmap.drawYearOverview();
+      // }
+      calendarHeatmap.drawYearOverview();
     };
     calcDimensions();
 
@@ -156,13 +157,19 @@ var calendarHeatmap = {
     }
 
     // Define start and end date of the selected year
-    var start_of_year = moment(calendarHeatmap.selected.date).startOf('year');
-    var end_of_year = moment(calendarHeatmap.selected.date).endOf('year');
+    var start_of_year = $("#startDate").datepicker("getDate");
+    var end_of_year = $("#endDate").datepicker("getDate");
+    // var start_of_year = moment(calendarHeatmap.selected.date).startOf('year');
+    // var end_of_year = moment(calendarHeatmap.selected.date).endOf('year');
 
     // Filter data down to the selected year
     var year_data = calendarHeatmap.data.filter(function(d) {
       return start_of_year <= moment(d.date) && moment(d.date) < end_of_year;
     });
+    // var year_data = calendarHeatmap.data.filter(function(d) {
+    //   var currentDate = moment(d.date);
+    //   return currentDate.isSameOrAfter(start_of_year) && currentDate.isBefore(end_of_year);
+    // });
 
     // Calculate max value of the year data
     var max_value = d3.max(year_data, function(d) {
@@ -183,9 +190,20 @@ var calendarHeatmap = {
       return calendarHeatmap.settings.label_padding + moment(d.date).weekday() * (calendarHeatmap.settings.item_size + calendarHeatmap.settings.gutter);
     };
     var calcItemSize = function(d) {
-      if (max_value <= 0) { return calendarHeatmap.settings.item_size; }
-      return calendarHeatmap.settings.item_size * 0.75 + (calendarHeatmap.settings.item_size * d.total / max_value) * 0.25;
+      return calendarHeatmap.settings.item_size;
+      // NOTE: change individual day size here
+      // if (max_value <= 0) { return calendarHeatmap.settings.item_size; }
+      // return calendarHeatmap.settings.item_size * 0.75 + (calendarHeatmap.settings.item_size * d.total / max_value) * 0.25;
     };
+
+    var allDaysInRange = [];
+    var currentDate = moment(start_of_year);
+
+    // Create an array containing all days between start_of_year and end_of_year
+    while (currentDate.isSameOrBefore(end_of_year)) {
+      allDaysInRange.push(currentDate.clone());
+      currentDate.add(1, 'day');
+    }
 
     calendarHeatmap.items.selectAll('.item-circle').remove();
     calendarHeatmap.items.selectAll('.item-circle')
@@ -213,21 +231,25 @@ var calendarHeatmap = {
         return calcItemSize(d);
       })
       .attr('fill', function(d) {
-        return (d.total > 0) ? color(d.total) : 'transparent';
+        // NOTE: change individual day color here
+        return (d.total > 0) ? color(d.total) : 'grey';
+        // return (d.total > 0) ? '#3CB043' : 'grey';
       })
       .on('click', function(d) {
+        // if (calendarHeatmap.in_transition) { return; }
+
+        // // Don't transition if there is no data to show
+        // if (d.total === 0) { return; }
+
+        // calendarHeatmap.in_transition = true;
+
+        // // Set selected date to the one clicked on
+        // calendarHeatmap.selected = d;
+
+        // // Hide tooltip
+        // calendarHeatmap.hideTooltip();
         if (calendarHeatmap.in_transition) { return; }
-
-        // Don't transition if there is no data to show
-        if (d.total === 0) { return; }
-
-        calendarHeatmap.in_transition = true;
-
-        // Set selected date to the one clicked on
-        calendarHeatmap.selected = d;
-
-        // Hide tooltip
-        calendarHeatmap.hideTooltip();
+        alert(d.date);
       })
       .transition()
       .delay(function() {
@@ -255,7 +277,8 @@ var calendarHeatmap = {
       });
 
     // Add month labels
-    var month_labels = d3.timeMonths(start_of_year, end_of_year);
+    var start_of_month = new Date(start_of_year.getFullYear(), start_of_year.getMonth(), 1);
+    var month_labels = d3.timeMonths(start_of_month, end_of_year);
     var monthScale = d3.scaleLinear()
       .range([0, calendarHeatmap.settings.width])
       .domain([0, month_labels.length]);
@@ -269,7 +292,11 @@ var calendarHeatmap = {
         return Math.floor(calendarHeatmap.settings.label_padding / 3) + 'px';
       })
       .text(function(d) {
-        return d.toLocaleDateString('en-us', { month: 'short' });
+        // NOTE: to remove month labels to just 3 letter month form
+        // return d.toLocaleDateString('en-us', { month: 'short' });
+        var monthName = d.toLocaleDateString('en-us', { month: 'short' });
+        var year = d.getFullYear().toString().slice(-2); // Extract last two digits
+        return monthName + " " + year; // Format: Dec'YY
       })
       .attr('x', function(d, i) {
         return monthScale(i) + (monthScale(i) - monthScale(i - 1)) / 2;
