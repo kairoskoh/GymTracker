@@ -7,11 +7,15 @@ bold current day using black border
 - make the days clickable, either 1 (went) or 0 (didnt go)
 - show the dates on hover
 
+- effects when click on dates?
+
 - compress .js into .min.js using https://jscompress.com/
 
 statistics tasks:
 - change to average per week, and ranking worldwide
 - implement statistics div, do calculations based on data
+- implement ranking worldwide (can be fake)
+- add monthly stats for each month
 
 general UI:
 - make it compatible on mobile phones
