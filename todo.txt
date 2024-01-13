@@ -4,9 +4,6 @@ random shades of green if went to the gym
 random shades of grey if didnt went to gym or in the future
 bold current day using black border
 
-- make the days clickable, either 1 (went) or 0 (didnt go)
-- show the dates on hover
-
 - effects when click on dates?
 
 - compress .js into .min.js using https://jscompress.com/

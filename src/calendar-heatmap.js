@@ -232,8 +232,93 @@ var calendarHeatmap = {
       })
       .attr('fill', function(d) {
         // NOTE: change individual day color here
-        return (d.total > 0) ? color(d.total) : 'grey';
-        // return (d.total > 0) ? '#3CB043' : 'grey';
+        // return (d.total > 0) ? color(d.total) : 'grey';
+        // // return (d.total > 0) ? '#3CB043' : 'grey';
+
+        if (calendarHeatmap.getCookie(d.date) !== '') {
+          return '#3CB043';
+        } else {
+          return (d.total > 0) ? color(d.total) : 'grey';
+        }
+      })
+      .on('mouseover', function(d) {
+        if (calendarHeatmap.in_transition) { return; }
+
+        // Pulsating animation
+        var circle = d3.select(this);
+        (function repeat() {
+          circle = circle.transition()
+            .duration(calendarHeatmap.settings.transition_duration)
+            .ease(d3.easeLinear)
+            .attr('x', function(d) {
+              return calcItemX(d) - (calendarHeatmap.settings.item_size * 1.1 - calendarHeatmap.settings.item_size) / 2;
+            })
+            .attr('y', function(d) {
+              return calcItemY(d) - (calendarHeatmap.settings.item_size * 1.1 - calendarHeatmap.settings.item_size) / 2;
+            })
+            .attr('width', calendarHeatmap.settings.item_size * 1.1)
+            .attr('height', calendarHeatmap.settings.item_size * 1.1)
+            .transition()
+            .duration(calendarHeatmap.settings.transition_duration)
+            .ease(d3.easeLinear)
+            .attr('x', function(d) {
+              return calcItemX(d) + (calendarHeatmap.settings.item_size - calcItemSize(d)) / 2;
+            })
+            .attr('y', function(d) {
+              return calcItemY(d) + (calendarHeatmap.settings.item_size - calcItemSize(d)) / 2;
+            })
+            .attr('width', function(d) {
+              return calcItemSize(d);
+            })
+            .attr('height', function(d) {
+              return calcItemSize(d);
+            })
+            .on('end', repeat);
+        })();
+
+        // Construct tooltip
+        var tooltip_html = '';
+        tooltip_html += '<div class="header"><strong> Selected Date: </strong></div>';
+        tooltip_html += '<div>' + moment(d.date).format('dddd, MMM Do YYYY') + '</div><br>';
+
+        // Calculate tooltip position
+        var x = calcItemX(d) + calendarHeatmap.settings.item_size;
+        if (calendarHeatmap.settings.width - x < (calendarHeatmap.settings.tooltip_width + calendarHeatmap.settings.tooltip_padding * 3)) {
+          x -= calendarHeatmap.settings.tooltip_width + calendarHeatmap.settings.tooltip_padding * 2;
+        }
+        var y = this.getBoundingClientRect().top + calendarHeatmap.settings.item_size;
+
+        // Show tooltip
+        calendarHeatmap.tooltip.html(tooltip_html)
+          .style('left', x + 'px')
+          .style('top', y + 'px')
+          .transition()
+          .duration(calendarHeatmap.settings.transition_duration / 2)
+          .ease(d3.easeLinear)
+          .style('opacity', 1);
+      })
+      .on('mouseout', function() {
+        if (calendarHeatmap.in_transition) { return; }
+
+        // Set circle radius back to what it's supposed to be
+        d3.select(this).transition()
+          .duration(calendarHeatmap.settings.transition_duration / 2)
+          .ease(d3.easeLinear)
+          .attr('x', function(d) {
+            return calcItemX(d) + (calendarHeatmap.settings.item_size - calcItemSize(d)) / 2;
+          })
+          .attr('y', function(d) {
+            return calcItemY(d) + (calendarHeatmap.settings.item_size - calcItemSize(d)) / 2;
+          })
+          .attr('width', function(d) {
+            return calcItemSize(d);
+          })
+          .attr('height', function(d) {
+            return calcItemSize(d);
+          });
+
+        // Hide tooltip
+        calendarHeatmap.hideTooltip();
       })
       .on('click', function(d) {
         // if (calendarHeatmap.in_transition) { return; }
@@ -247,9 +332,23 @@ var calendarHeatmap = {
         // calendarHeatmap.selected = d;
 
         // // Hide tooltip
-        // calendarHeatmap.hideTooltip();
+        calendarHeatmap.hideTooltip();
         if (calendarHeatmap.in_transition) { return; }
-        alert(d.date);
+
+        if (calendarHeatmap.getCookie(d.date) == '' ) {
+          calendarHeatmap.setCookie(d.date);
+        } else {
+          calendarHeatmap.removeCookie(d.date);
+        }
+        // Added by Anisha
+        calendarHeatmap.items.selectAll('.item-circle')
+        .attr('fill', function(d) {
+          if (calendarHeatmap.getCookie(d.date) !== '') {
+            return '#3CB043';
+          } else {
+            return (d.total > 0) ? color(d.total) : 'grey';
+          }
+        })
       })
       .transition()
       .delay(function() {
@@ -425,4 +524,43 @@ var calendarHeatmap = {
     return time;
   },
 
+  /**
+   * Helper function to set cookie for individual dates
+   * @param currDate DateTime
+   */
+  setCookie: function(currDate){
+    var d = new Date();
+    d.setTime(d.getTime()+(30*24*60*60*1000));
+    var expires = "expires="+d.toGMTString();
+    document.cookie = currDate+"="+"True"+"; "+expires;
+  },
+
+  /**
+   * Helper function to remove cookie for individual dates
+   * @param currDate DateTime
+   */
+  removeCookie: function(currDate){
+    document.cookie = `${currDate}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    // var d = new Date();
+    // d.setTime(d.getTime()+(-30*24*60*60*1000));
+    // var expires = "expires="+d.toGMTString();
+    // document.cookie = currDate+"="+"False"+"; "+expires;
+  },
+
+  /**
+   * Helper function to get cookie for individual dates
+   * @param currDate DateTime
+   */
+  getCookie: function(currDate){
+    var name = currDate + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) 
+      {
+      var c = ca[i].trim();
+      if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+      }
+    return "";
+  },
+
 };
+
