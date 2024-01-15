@@ -331,7 +331,7 @@ var calendarHeatmap = {
         // // Set selected date to the one clicked on
         // calendarHeatmap.selected = d;
 
-        // // Hide tooltip
+        // Hide tooltip
         calendarHeatmap.hideTooltip();
         if (calendarHeatmap.in_transition) { return; }
 
@@ -349,6 +349,9 @@ var calendarHeatmap = {
             return (d.total > 0) ? color(d.total) : 'grey';
           }
         })
+        
+        // Update statistics
+        calendarHeatmap.updateStatistics()
       })
       .transition()
       .delay(function() {
@@ -562,5 +565,44 @@ var calendarHeatmap = {
     return "";
   },
 
+  /**
+   * Helper function to calculate days worked out
+   */
+  calculateDaysWorkedOut: function(){
+    var totalCookies = 0;
+    var cookies = document.cookie.split(';');
+
+    // Iterate through cookies and sum up their values
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      var cookieParts = cookie.split('=');
+
+      // Check if the cookie has a value
+      if (cookieParts.length === 2) {
+        totalCookies++;
+      }
+    }
+
+    if (totalCookies > 3) {
+      return totalCookies - 3;
+    }
+    return 0;
+  },
+
+  /**
+   * Helper function to update statistics
+   */
+  updateStatistics: function(){
+    var daysWorkedOut = this.calculateDaysWorkedOut();
+    var totalDays = 365;
+    var percentage = Math.round((daysWorkedOut / totalDays) * 100);
+    var displayText1 = daysWorkedOut + '/' + totalDays + ' (' + percentage + '%)';
+    document.getElementById('daysWorkedOut').textContent = displayText1;
+
+    var membershipCost = getCookie("membershipCost");
+    var costPerEntry = membershipCost / daysWorkedOut;
+    var displayText4 = '$' + Math.round(costPerEntry);
+    document.getElementById('costPerEntry').textContent = displayText4;    
+  },
 };
 
