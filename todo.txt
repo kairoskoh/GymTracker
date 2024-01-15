@@ -1,18 +1,10 @@
 calendar tasks:
-- make color of each date:
-random shades of green if went to the gym
-random shades of grey if didnt went to gym or in the future
-bold current day using black border
-
-- effects when click on dates?
-
-- compress .js into .min.js using https://jscompress.com/
+- bold current day using black border
+- animations/effects when click on dates
 
 statistics tasks:
-- change to average per week, and ranking worldwide
-- implement statistics div, do calculations based on data
+- add average per week, and average per month
 - implement ranking worldwide (can be fake)
-- add monthly stats for each month
 
 general UI:
 - make it compatible on mobile phones
@@ -20,3 +12,5 @@ general UI:
 optional:
 - in a dropdown button, show a table/list of dates that u went to gym
 - set max number of months to 12 months? in case too much months displayed
+
+- compress .js into .min.js using https://jscompress.com/

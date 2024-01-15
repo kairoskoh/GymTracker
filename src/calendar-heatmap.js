@@ -590,6 +590,90 @@ var calendarHeatmap = {
   },
 
   /**
+   * Helper function to get gym attendance date from cookies
+   */
+  getGymAttendanceData: function() {
+    const gymAttendanceData = [];
+    const cookies = document.cookie.split(';');
+    
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      const date = cookie.split('=')[0];
+      if (date !== "endDate" && date !== "startDate" && date !== "membershipCost") {
+        gymAttendanceData.push(new Date(date));
+      };
+    }
+
+    gymAttendanceData.sort((a, b) => a - b);
+
+    return gymAttendanceData;
+  },
+
+  /**
+   * Helper function to calculate the number of days before the current day 
+   * that the user did not go to the gym
+   */
+  calculateDaysNotVisited: function() {
+    const gymAttendanceData = this.getGymAttendanceData();
+
+    var today = new Date();
+    var startDate = new Date(getCookie("startDate"));
+    var timeDifference = today.getTime() - startDate.getTime()
+    var daysSoFar = Math.floor((timeDifference) / (1000 * 60 * 60 * 24)) + 1;
+
+    let daysNotVisited = 0;
+    let daysVisited = 0;
+    
+    for (let i = 0; i < gymAttendanceData.length; i++) {
+      const currentDay = gymAttendanceData[i];
+      if (currentDay > today) {
+        break;
+      } else {
+        daysVisited += 1;
+      }
+    }
+    daysNotVisited = daysSoFar - daysVisited;
+    var percentage = Math.round((daysNotVisited / daysSoFar) * 100);
+    var output = daysNotVisited + '/' + daysSoFar + ' (' + percentage + '%)';
+    return output;
+  },
+
+  /**
+   * Helper function to calculate the longest streak where the user 
+   * went to the gym consecutively
+   */
+  calculateLongestStreak: function() {
+    const gymAttendanceData = this.getGymAttendanceData();
+    let currentStreak = 0;
+    let longestStreak = 0;
+    if (gymAttendanceData.length == 0) {
+      return 0;
+    }
+    if (gymAttendanceData.length == 1) {
+      return 1;
+    }
+    for (let i = 0; i < gymAttendanceData.length - 1; i++) {
+      const currentDay = gymAttendanceData[i];
+      const nextDay = gymAttendanceData[i + 1];
+
+      const timeDifference = nextDay - currentDay;
+      const daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+      if (daysDifference === 1) {
+        currentStreak++;
+      } else {
+        currentStreak = 0;
+      }
+
+      if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+      }
+    }
+
+    return longestStreak + 1;
+  },
+
+  /**
    * Helper function to update statistics
    */
   updateStatistics: function(){
@@ -598,6 +682,13 @@ var calendarHeatmap = {
     var percentage = Math.round((daysWorkedOut / totalDays) * 100);
     var displayText1 = daysWorkedOut + '/' + totalDays + ' (' + percentage + '%)';
     document.getElementById('daysWorkedOut').textContent = displayText1;
+
+    var displayText2 = this.calculateDaysNotVisited();
+    document.getElementById('daysMissed').textContent = displayText2;
+
+    var longestStreak = this.calculateLongestStreak();
+    var displayText3 = longestStreak + ' days'
+    document.getElementById('longestStreak').textContent = displayText3;
 
     var membershipCost = getCookie("membershipCost");
     var costPerEntry = membershipCost / daysWorkedOut;
