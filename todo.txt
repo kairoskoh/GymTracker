@@ -1,6 +1,7 @@
 calendar tasks:
 - bold current day using black border
 - animations/effects when click on dates
+- fix months misalign issue
 
 statistics tasks:
 - add average per week, and average per month
@@ -12,5 +13,6 @@ general UI:
 optional:
 - in a dropdown button, show a table/list of dates that u went to gym
 - set max number of months to 12 months? in case too much months displayed
+- add header and other UI similar to wordle 
 
 - compress .js into .min.js using https://jscompress.com/
