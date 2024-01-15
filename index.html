@@ -124,19 +124,19 @@
     <div class="statistics">
       <div class="stat-box">
         <span class="stat-label">Days worked out:</span>
-        <span class="stat-value" style="color: #3CB043;">10/365 (5%)</span>
+        <span class="stat-value" style="color: #3CB043;" id="daysWorkedOut">10/365 (5%)</span>
       </div>
       <div class="stat-box">
           <span class="stat-label">Days missed:</span>
-          <span class="stat-value" style="color: #AEF359;">5/365</span>
+          <span class="stat-value" style="color: #AEF359;" id="daysMissed">5/365</span>
       </div>
       <div class="stat-box">
           <span class="stat-label">Longest streak:</span>
-          <span class="stat-value" style="color: #98bf64;">3 days</span>
+          <span class="stat-value" style="color: #98bf64;" id="longestStreak">3 days</span>
       </div>
       <div class="stat-box">
           <span class="stat-label">Cost per entry:</span>
-          <span class="stat-value" style="color: #3CB043;">$20</span>
+          <span class="stat-value" style="color: #3CB043;" id="costPerEntry">$20</span>
       </div>
     </div>
 
@@ -274,12 +274,13 @@
         if (getCookie("endDate") !== null && getCookie("startDate") !== null) {
           displayCalendar();
         }
+        calendarHeatmap.updateStatistics();
       });
       
     </script>
 
   <footer style="text-align: center; margin-top: 20px;">
-    <p>v1.0.0 © 2023 <a href="https://www.linkedin.com/in/kairoskoh/" target="_blank">Kairos</a> All Rights Reserved</p>
+    <p>v1.0.0 © 2024 <a href="https://www.linkedin.com/in/kairoskoh/" target="_blank">Kairos</a> All Rights Reserved</p>
   </footer>
 
 </body>
