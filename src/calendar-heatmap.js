@@ -709,16 +709,24 @@ var calendarHeatmap = {
     var displayText1 = daysWorkedOut + '/' + totalDays + ' (' + percentage + '%)';
     document.getElementById('daysWorkedOut').textContent = displayText1;
 
-    var displayText2 = this.calculateDaysNotVisited();
-    document.getElementById('daysMissed').textContent = displayText2;
-
-    var longestStreak = this.calculateLongestStreak();
-    var displayText3 = longestStreak + ' days'
-    document.getElementById('longestStreak').textContent = displayText3;
-
     var membershipCost = getCookie("membershipCost");
     if (membershipCost == '') {
-      displayText4 = "--"
+      var displayText2 = "--"
+    } else {
+      var displayText2 = this.calculateDaysNotVisited();
+    }
+    document.getElementById('daysMissed').textContent = displayText2;
+
+    if (membershipCost == '') {
+      var displayText3 = "0 days"
+    } else {
+      var longestStreak = this.calculateLongestStreak();
+      var displayText3 = longestStreak + ' days'
+    }
+    document.getElementById('longestStreak').textContent = displayText3;
+
+    if (membershipCost == '') {
+      var displayText4 = "--"
     } else {
       var costPerEntry = membershipCost / daysWorkedOut;
       var displayText4 = '$' + Math.round(costPerEntry);
