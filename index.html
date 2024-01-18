@@ -210,6 +210,17 @@
         $("#startDate, #endDate").datepicker({
           dateFormat: "yy-mm-dd"
         });
+        // Set start date to the first day of the current year
+        var firstDayOfYear = new Date(new Date().getFullYear(), 0, 1);
+        $("#startDate").datepicker("setDate", firstDayOfYear);
+
+        // Set end date to the last day of the current year
+        var lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
+        $("#endDate").datepicker("setDate", lastDayOfYear);
+
+        setCookie("startDate",firstDayOfYear,30);
+        setCookie("endDate",lastDayOfYear, 30);
+        displayCalendar();
       });
 
       // Event listener for date change in inputs
