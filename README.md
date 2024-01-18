@@ -13,7 +13,6 @@ This is a simple web application for tracking gym membership, with a visual cale
 - HTML
 - CSS
 - JavaScript (for interactive features)
-- [jQuery](https://jquery.com/) (for datepicker functionality)
 
 ## Usage
 
@@ -21,7 +20,6 @@ To use this project:
 
 1. Clone the repository to your local machine.
 2. Open the `index.html` file in your web browser.
-
 
 ## Usage Notes
 
@@ -32,5 +30,3 @@ To use this project:
 ## License
 
 This project is licensed under the MIT License.
-
-
