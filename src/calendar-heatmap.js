@@ -241,6 +241,23 @@ var calendarHeatmap = {
           return (d.total > 0) ? color(d.total) : 'grey';
         }
       })
+      .attr('stroke', function(d) {
+        // Check if d.date is today's date
+        var currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Reset hours, minutes, seconds, and milliseconds for accurate date comparison
+        var date = new Date(d.date);
+        
+        if (date.getTime() === currentDate.getTime()) {
+            return 'black'; // Set black border if it's today's date
+        } else {
+            return 'none'; // No border for other dates
+        }
+      })
+      .attr('stroke-width', function(d) {
+        // Set the border width
+        // You can adjust the value (e.g., 2) to make the border thicker or thinner
+        return 3;
+      })
       .on('mouseover', function(d) {
         if (calendarHeatmap.in_transition) { return; }
 
@@ -337,6 +354,12 @@ var calendarHeatmap = {
 
         if (calendarHeatmap.getCookie(d.date) == '' ) {
           calendarHeatmap.setCookie(d.date);
+          // Add animation
+          const jsConfetti = new JSConfetti();
+          jsConfetti.addConfetti({
+            // emojis: ['🏋️‍♂️', '💪', '🎉', '🥳', '💥', '🚴‍♂️', '🤸‍♂️', '🏆'],
+            emojiSize: 15,
+          });
         } else {
           calendarHeatmap.removeCookie(d.date);
         }
@@ -351,7 +374,7 @@ var calendarHeatmap = {
         })
         
         // Update statistics
-        calendarHeatmap.updateStatistics()
+        calendarHeatmap.updateStatistics();
       })
       .transition()
       .delay(function() {
