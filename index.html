@@ -13,6 +13,9 @@
   <!-- <link rel="stylesheet" type="text/css" href="dist/calendar-heatmap.min.css"> -->
   <link rel="stylesheet" type="text/css" href="src/calendar-heatmap.css">
 
+  <!-- confetti JS library-->
+  <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -124,19 +127,19 @@
     <div class="statistics">
       <div class="stat-box">
         <span class="stat-label">Days worked out:</span>
-        <span class="stat-value" style="color: #3CB043;">10/365 (5%)</span>
+        <span class="stat-value" style="color: #3CB043;" id="daysWorkedOut">10/365 (5%)</span>
       </div>
       <div class="stat-box">
           <span class="stat-label">Days missed:</span>
-          <span class="stat-value" style="color: #AEF359;">5/365</span>
+          <span class="stat-value" style="color: #AEF359;" id="daysMissed">5/365</span>
       </div>
       <div class="stat-box">
           <span class="stat-label">Longest streak:</span>
-          <span class="stat-value" style="color: #98bf64;">3 days</span>
+          <span class="stat-value" style="color: #98bf64;" id="longestStreak">3 days</span>
       </div>
       <div class="stat-box">
           <span class="stat-label">Cost per entry:</span>
-          <span class="stat-value" style="color: #3CB043;">$20</span>
+          <span class="stat-value" style="color: #3CB043;" id="costPerEntry">$20</span>
       </div>
     </div>
 
@@ -144,129 +147,143 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.min.js" charset="utf-8"></script>
     <!-- <script src="dist/calendar-heatmap.min.js"></script> -->
     <script src="src/calendar-heatmap.js"></script>
+
     <script>
-        (function () {
-          // Initialize random data for the demo
-          var now = moment().endOf('day').toDate();
-          var time_ago = moment().startOf('day').subtract(10, 'year').toDate();
-          var example_data = d3.timeDays(time_ago, now).map(function (dateElement, index) {
-            return {
-              date: dateElement,
-              details: Array.apply(null, new Array(Math.floor(Math.random() * 15))).map(function(e, i, arr) {
-                return {
-                  'name': 'Project ' + Math.ceil(Math.random() * 10),
-                  'date': function () {
-                    var projectDate = new Date(dateElement.getTime());
-                    projectDate.setHours(Math.floor(Math.random() * 24));
-                    projectDate.setMinutes(Math.floor(Math.random() * 60));
-                    return projectDate;
-                  }(),
-                  'value': 3600 * ((arr.length - i) / 5) + Math.floor(Math.random() * 3600) * Math.round(Math.random() * (index / 365))
-                }
-              }),
-              init: function () {
-                this.total = this.details.reduce(function (prev, e) {
-                  return prev + e.value;
-                }, 0);
-                return this;
+      function displayCalendar() {
+        // Remove previous calendar
+        var calendarElement = document.getElementById('calendar');
+        calendarElement.innerHTML = '';
+
+        // Initialize random data for the demo
+        // var now = $("#startDate").datepicker("getDate");
+        // var time_ago = $("#endDate").datepicker("getDate");
+        var time_ago = ($("#startDate").datepicker("getDate") !== null) ? $("#startDate").datepicker("getDate") : moment().endOf('day').toDate();
+        var now = ($("#endDate").datepicker("getDate") !== null) ? $("#endDate").datepicker("getDate") : moment().startOf('day').subtract(10, 'year').toDate();
+        // var now = moment().endOf('day').toDate();
+        // var time_ago = moment().startOf('day').subtract(10, 'year').toDate();
+        // alert(now);
+        // alert(time_ago);
+        var example_data = d3.timeDays(time_ago, now).map(function (dateElement, index) {
+          return {
+            date: dateElement,
+            details: Array.apply(null, new Array(Math.floor(Math.random() * 15))).map(function(e, i, arr) {
+              return {
+                'name': 'Project ' + Math.ceil(Math.random() * 10),
+                'date': function () {
+                  var projectDate = new Date(dateElement.getTime());
+                  projectDate.setHours(Math.floor(Math.random() * 24));
+                  projectDate.setMinutes(Math.floor(Math.random() * 60));
+                  return projectDate;
+                }(),
+                'value': 3600 * ((arr.length - i) / 5) + Math.floor(Math.random() * 3600) * Math.round(Math.random() * (index / 365))
               }
-            }.init();
-          });
-    
-          // Set the div target id
-          var div_id = 'calendar';
-    
-          // Set custom color for the calendar heatmap
-          var color = '#7bae37';
-    
-          // Set overview type (choices are year, month and day)
-          var overview = 'year';
-    
-          // Handler function
-          var print = function (val) {
-            console.log(val);
-          };
-    
-          // Initialize calendar heatmap
-          calendarHeatmap.init(example_data, div_id, color, overview, print);
-        })();
-      </script>
-
-
-    <script>
-        $(function() {
-          $("#startDate, #endDate").datepicker({
-            dateFormat: "yy-mm-dd"
-          });
+            }),
+            init: function () {
+              this.total = this.details.reduce(function (prev, e) {
+                return prev + e.value;
+              }, 0);
+              return this;
+            }
+          }.init();
         });
+  
+        // Set the div target id
+        var div_id = 'calendar';
+  
+        // Set custom color for the calendar heatmap
+        // var color = '#7bae37';
+        var color = 'grey';
+  
+        // Set overview type (choices are year, month and day)
+        var overview = 'year';
+  
+        // Handler function
+        var print = function (val) {
+          console.log(val);
+        };
+  
+        // Initialize calendar heatmap
+        calendarHeatmap.init(example_data, div_id, color, overview, print);
+      };
 
-        // Event listener for date change in inputs
-        $("#startDate, #endDate").on("change", function() {
+      $(function() {
+        $("#startDate, #endDate").datepicker({
+          dateFormat: "yy-mm-dd"
+        });
+      });
+
+      // Event listener for date change in inputs
+      $("#startDate, #endDate").on("change", function() {
         var startDate = $("#startDate").datepicker("getDate");
         var endDate = $("#endDate").datepicker("getDate");
 
         if (startDate !== null && endDate !== null) {
-            if (startDate > endDate) {
-              // Show popup or alert for invalid date selection
-              alert("Invalid membership dates selected. Please ensure the start date is before the end date.");
-            } else {
-              // Stores startDate and endDate into cookies
-              setCookie("startDate",startDate,30)
-              setCookie("endDate",endDate, 30)
-            }
+          if (startDate > endDate) {
+            // Show popup or alert for invalid date selection
+            alert("Invalid membership dates selected. Please ensure the start date is before the end date.");
+          } else {
+            // Stores startDate and endDate into cookies
+            setCookie("startDate",startDate,30);
+            setCookie("endDate",endDate, 30);
+            displayCalendar();
+          }
         }
-        });
+      });
 
-        // Function to set cookies
-        function setCookie(cname,cvalue,exdays)
+      // Function to set cookies
+      function setCookie(cname,cvalue,exdays)
+      {
+      var d = new Date();
+      d.setTime(d.getTime()+(exdays*24*60*60*1000));
+      var expires = "expires="+d.toGMTString();
+      document.cookie = cname+"="+cvalue+"; "+expires;
+      }
+
+      // Function to get cookies
+      function getCookie(cname)
+      {
+      var name = cname + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0; i<ca.length; i++) 
         {
-        var d = new Date();
-        d.setTime(d.getTime()+(exdays*24*60*60*1000));
-        var expires = "expires="+d.toGMTString();
-        document.cookie = cname+"="+cvalue+"; "+expires;
+        var c = ca[i].trim();
+        if (c.indexOf(name)==0) return c.substring(name.length,c.length);
         }
+      return "";
+      }
 
-        // Function to get cookies
-        function getCookie(cname)
-        {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0; i<ca.length; i++) 
-          {
-          var c = ca[i].trim();
-          if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-          }
-        return "";
+      // Event listener for change in membership costs
+      $("#membershipCost").on("change", function(){
+      if (membershipCost !== null) {
+        setCookie("membershipCost", membershipCost.value, 30)
+      }
+      });
+
+      // Update input texts based on cookies
+      $(function() {
+        if (getCookie("membershipCost") !== null) {                 
+        var val1 = getCookie("membershipCost");            
+        var input1 = document.getElementById("membershipCost");                                 
+        input1.value = val1;
         }
-
-        // Event listener for change in membership costs
-        $("#membershipCost").on("change", function(){
-        if (membershipCost !== null) {
-          setCookie("membershipCost", membershipCost.value, 30)
+        if (getCookie("endDate") !== null) {                 
+          var val2 = getCookie("endDate");        
+          $("#endDate").datepicker("setDate", new Date(val2));
         }
-        });
-
-        // Update input texts based on cookies
-        $(function() {
-          if (getCookie("membershipCost") !== null) {                 
-          var val1 = getCookie("membershipCost");            
-          var input1 = document.getElementById("membershipCost");                                 
-          input1.value = val1;
-          }
-          if (getCookie("endDate") !== null) {                 
-            var val2 = getCookie("endDate");        
-            $("#endDate").datepicker("setDate", new Date(val2));
-          }
-          if (getCookie("startDate") !== null) {                 
-            var val3 = getCookie("startDate");            
-            $("#startDate").datepicker("setDate", new Date(val3));
-          }
-        });
-        
-      </script>
+        if (getCookie("startDate") !== null) {                 
+          var val3 = getCookie("startDate");            
+          $("#startDate").datepicker("setDate", new Date(val3));
+        }
+        if (getCookie("endDate") !== null && getCookie("startDate") !== null) {
+          displayCalendar();
+        }
+        calendarHeatmap.updateStatistics();
+      });
+      
+    </script>
 
   <footer style="text-align: center; margin-top: 20px;">
-    <p>© 2023 <a href="https://www.linkedin.com/in/kairoskoh/" target="_blank">Kairos</a> All Rights Reserved</p>
+    <p>v1.0.0 © 2024 <a href="https://www.linkedin.com/in/kairoskoh/" target="_blank">Kairos</a> All Rights Reserved</p>
   </footer>
 
 </body>
