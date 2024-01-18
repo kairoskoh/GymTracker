@@ -351,7 +351,7 @@ var calendarHeatmap = {
         // Hide tooltip
         calendarHeatmap.hideTooltip();
         if (calendarHeatmap.in_transition) { return; }
-
+        console.log("ifelse before")
         if (calendarHeatmap.getCookie(d.date) == '' ) {
           calendarHeatmap.setCookie(d.date);
           // Add animation
@@ -361,7 +361,9 @@ var calendarHeatmap = {
             emojiSize: 15,
           });
         } else {
+          console.log("removecookie before")
           calendarHeatmap.removeCookie(d.date);
+          console.log("removecookie after")
         }
         // Added by Anisha
         calendarHeatmap.items.selectAll('.item-circle')
@@ -566,7 +568,6 @@ var calendarHeatmap = {
    * @param currDate DateTime
    */
   removeCookie: function(currDate){
-    alert("itworks");
     document.cookie = `${currDate}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     // var d = new Date();
     // d.setTime(d.getTime()+(-30*24*60*60*1000));
