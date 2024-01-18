@@ -655,6 +655,9 @@ var calendarHeatmap = {
         daysVisited += 1;
       }
     }
+    if (daysSoFar < 2) {
+      return "--";
+    }
     daysNotVisited = daysSoFar - daysVisited;
     var percentage = Math.round((daysNotVisited / daysSoFar) * 100);
     var output = daysNotVisited + '/' + daysSoFar + ' (' + percentage + '%)';
@@ -714,8 +717,12 @@ var calendarHeatmap = {
     document.getElementById('longestStreak').textContent = displayText3;
 
     var membershipCost = getCookie("membershipCost");
-    var costPerEntry = membershipCost / daysWorkedOut;
-    var displayText4 = '$' + Math.round(costPerEntry);
+    if (membershipCost == '') {
+      displayText4 = "--"
+    } else {
+      var costPerEntry = membershipCost / daysWorkedOut;
+      var displayText4 = '$' + Math.round(costPerEntry);
+    }
     document.getElementById('costPerEntry').textContent = displayText4;    
   },
 };
